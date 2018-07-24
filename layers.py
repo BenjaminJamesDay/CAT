@@ -29,7 +29,7 @@ class ConditionalAttentionLayer(nn.Module):
             x = torch.sum([mech(x, adj) for mech in self.mechanisms], dim=1)
         x = F.dropout(x, self.dropout, training=self.training)
         if self.activate:
-            x = self.activation(self.out_att(x, adj))
+            x = self.activation(x)
         return x
 
 class SimplifiedGATLayer(nn.Module):
@@ -59,5 +59,5 @@ class SimplifiedGATLayer(nn.Module):
         x = F.dropout(x, self.dropout, training=self.training)
         
         if self.activate:
-            x = self.activation(self.out_att(x, adj))
+            x = self.activation(x)
         return x
