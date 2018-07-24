@@ -1,19 +1,23 @@
-
-# coding: utf-8
-
-# In[7]:
-
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
-# In[8]:
-
 class ConditionalAttentionMech(nn.Module):
     """
-    Simple GAT layer, similar to https://arxiv.org/abs/1710.10903
+    Auto-conditional GAT-like mechanism:
+    
+    alpha_ij = a . concat(big_W . h_i, big_W . h_j) = (b . big_W . h_i) + (c . big_W . h_j)
+    
+    e_ij = softmax(LeakyReLU(alpha_ij))_j   -- j in neighbourhood of i
+    
+    GAT = sum { e_ij * big_W . h_j }
+    
+    gamma = w_g . h' = w_g . big_W . h
+    beta = w_b . h' = w_b . big_W . h
+    
+    h' = gamma * GAT + beta
+    
     """
 
     def __init__(self, in_features, out_features, dropout, leak, condition=True):
@@ -89,4 +93,3 @@ class ConditionalAttentionMech(nn.Module):
 
     def __repr__(self):
         return self.__class__.__name__ + ' (' + str(self.in_features) + ' -> ' + str(self.out_features) + ')'
-
