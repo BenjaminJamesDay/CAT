@@ -18,7 +18,7 @@ class CCModel(nn.Module):
     - dropout = 0.6
     """
     def __init__(self, ins, classes):
-        super(CCmodel, self).__init__()
+        super(CCModel, self).__init__()
         
         # dropout is included in the layers so we don't need to add anything else
         # activate the first layer and use the automatic ELU
