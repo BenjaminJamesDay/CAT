@@ -25,8 +25,8 @@ class ConditionalAttentionMech(nn.Module):
         self.dropout = dropout
         self.in_features = in_features
         self.out_features = out_features
-        self.leak = alpha
         self.condition = condition
+        self.leakyrelu = nn.LeakyReLU(leak)
         
         t_type = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
 
@@ -51,7 +51,6 @@ class ConditionalAttentionMech(nn.Module):
                                                           gain=np.sqrt(2.0)),
                                    requires_grad=True)
 
-        self.leakyrelu = nn.LeakyReLU(self.leak)
 
     def forward(self, input, adj):
         # transform to new feature space
@@ -64,10 +63,10 @@ class ConditionalAttentionMech(nn.Module):
         # repeat in order {1,2...N,1,2...N,...,N}
         a_j_input = h.repeat(N, 1)
         
-        # sum the two dot products
-        alpha = torch.sum(torch.matmul(a_i_input, self.a_i), torch.matmul(a_j_input, self.a_j))
-        # activate
-        e = self.leakyrelu(alpha, leak)
+        # sum the dot products
+        alpha = torch.matmul(a_i_input, self.a_i) + torch.matmul(a_j_input, self.a_j)
+        # activate and make square
+        e = self.leakyrelu(alpha).view(N,N)
         
         # this will zero out in a softmax
         zero_vec = -9e15*torch.ones_like(e)
