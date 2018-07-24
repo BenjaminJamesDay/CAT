@@ -19,7 +19,7 @@ from models import CCModel
 # Training settings
 parser = argparse.ArgumentParser()
 parser.add_argument('--no_cuda', action='store_true', default=False, help='Disables CUDA training.')
-parser.add_argument('--cuda_device', type=str, default='0', help='CUDA device to use.')
+parser.add_argument('--cuda_device', type=str, default='3', help='CUDA device to use.')
 parser.add_argument('--fastmode', action='store_true', default=False, help='Validate during training pass.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
 parser.add_argument('--epochs', type=int, default=1000, help='Number of epochs to train.')
