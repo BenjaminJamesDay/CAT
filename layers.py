@@ -17,11 +17,12 @@ class ConditionalAttentionLayer(nn.Module):
         
         self.activation = activation
         self.activate = activate
+        self.concat = concat
         
     def forward(self, x, adj):
         x = F.dropout(x, self.dropout, training=self.training)
         # either concatenate (intermediate layer)
-        if concat:
+        if self.concat:
             x = torch.cat([mech(x, adj) for mech in self.mechanisms], dim=1)
         # or sum (final layer)
         else:
@@ -45,11 +46,12 @@ class SimplifiedGATLayer(nn.Module):
         
         self.activation = activation
         self.activate = activate
+        self.concat = concat
         
     def forward(self, x, adj):
         x = F.dropout(x, self.dropout, training=self.training)
         # either concatenate (intermediate layer)
-        if concat:
+        if self.concat:
             x = torch.cat([mech(x, adj) for mech in self.mechanisms], dim=1)
         # or sum (final layer)
         else:
