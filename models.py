@@ -22,9 +22,9 @@ class CCModel(nn.Module):
         
         # dropout is included in the layers so we don't need to add anything else
         # activate the first layer and use the automatic ELU
-        self.CAT1 = ConditionalAttentionLayer(N_mechs=8, dropout=0.5, ins=ins, leak=0.2, outs=8, activate=True)
+        self.CAT1 = ConditionalAttentionLayer(N_mechs=8, dropout=0.6, ins=ins, leak=0.2, outs=8, activate=True)
         # do not activate the output
-        self.CAT2 = ConditionalAttentionLayer(N_mechs=1, dropout=0.5, ins=64, leak=0.2, outs=classes)
+        self.CAT2 = ConditionalAttentionLayer(N_mechs=1, dropout=0.6, ins=64, leak=0.2, outs=classes)
         
     def forward(self, x, adj):
         # pass is v tidy, just first layer then second
