@@ -34,7 +34,7 @@ parser.add_argument('--patience', type=int, default=100, help='Patience')
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 
-os.environ['CUDA_VISIBLE_DEVICES'] = args.cuda_device
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 
 random.seed(args.seed)
 np.random.seed(args.seed)
