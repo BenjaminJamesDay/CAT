@@ -51,11 +51,11 @@ class ConditionalAttentionMech(nn.Module):
         
         # conditioning parameter vectors
         self.w_gamma = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(out_features, 1).type(t_type),
-                                                           gain=np.sqrt(2.0)),
+                                                           gain=np.sqrt(0.1)),
                                     requires_grad=True)
         
         self.w_beta = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(out_features, 1).type(t_type),
-                                                          gain=np.sqrt(2.0)),
+                                                          gain=np.sqrt(0.1)),
                                    requires_grad=True)
 
 
