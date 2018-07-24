@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
-from layer import ConditionalAttentionLayer
+from layers import ConditionalAttentionLayer, SimplifiedGATLayer
 
 class CCModel(nn.Module):
     """
@@ -20,13 +20,33 @@ class CCModel(nn.Module):
     def __init__(self, ins, classes):
         super(CCmodel, self).__init__()
         
-        # a leak of 1 linearises the layers so we can use ELU and softmax instead
-        # dropout is included in the layers
-        self.CAT1 = ConditionalAttentionLayer(N_mechs=8, concat=True, dropout=0.6, ins=ins, leak=1, outs=8)
-        self.CAT2 = ConditionalAttentionLayer(N_mechs=1, cocnat=True, dropout=0.6, ins=64, leak=1, outs=classes)
+        # dropout is included in the layers so we don't need to add anything else
+        # activate the first layer and use the automatic ELU
+        self.CAT1 = ConditionalAttentionLayer(N_mechs=8, dropout=0.6, ins=ins, leak=0.2, outs=8, activate=True)
+        # do not activate the output
+        self.CAT2 = ConditionalAttentionLayer(N_mechs=1, dropout=0.6, ins=64, leak=0.2, outs=classes)
         
     def forward(self, x, adj):
         # pass is v tidy, just first layer then second
-        x = F.elu(self.CAT1(x,adj))
+        x = self.CAT2((self.CAT1(x,adj)),adj)
         return F.log_softmax(x, dim=1)
 
+class SimpleGAT(nn.Module):
+    """
+    Model matching the form used for the CORA and Citeseer tasks in the GAT paper, replacing the GAT
+    layers with Simplified GAT Layers
+    """
+    def __init__(self, ins, classes):
+        super(CCmodel, self).__init__()
+        
+        # dropout is included in the layers so we don't need to add anything else
+        # activate the first layer and use the default ELU
+        # layers default to concatenation 
+        self.SGAT1 = SimplifiedGATLayer(N_mechs=8, dropout=0.6, ins=ins, leak=0.2, outs=8, activate=True)
+        # do not activate the output
+        self.SGAT2 = SimplifiedGATLayer(N_mechs=1, dropout=0.6, ins=64, leak=0.2, outs=classes)
+        
+    def forward(self, x, adj):
+        # pass is v tidy, just first layer then second
+        x = self.SGAT2((self.SGAT1(x,adj)),adj)
+        return F.log_softmax(x, dim=1)
