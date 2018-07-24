@@ -2,6 +2,9 @@
 from __future__ import division
 from __future__ import print_function
 
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+
 import time
 import argparse
 import numpy as np
@@ -9,7 +12,6 @@ import random
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
-import os
 import glob
 from torch.autograd import Variable
 
@@ -34,7 +36,6 @@ parser.add_argument('--patience', type=int, default=100, help='Patience')
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 
 random.seed(args.seed)
 np.random.seed(args.seed)
