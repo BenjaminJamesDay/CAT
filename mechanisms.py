@@ -89,9 +89,9 @@ class ConditionalAttentionMech(nn.Module):
         
         # if this is a conditioning layer, do the conditioning
         if self.condition:
-            gamma = torch.matmul(a_i_input, self.w_gamma)
+            gamma = torch.matmul(h, self.w_gamma)
             gamma += torch.ones_like(gamma)
-            beta = torch.matmul(a_i_input, self.w_beta)
+            beta = torch.matmul(h, self.w_beta)
             
             h_prime = gamma * h_prime + beta
 
