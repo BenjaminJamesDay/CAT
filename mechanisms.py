@@ -25,14 +25,13 @@ class deepCAT(nn.Module):
     
     """
 
-    def __init__(self, in_features, out_features, dropout, leak, condition=True, conditioner):
+    def __init__(self, in_features, out_features, dropout, leak, condition=True):
         super(deepCAT, self).__init__()
         self.dropout = dropout
         self.in_features = in_features
         self.out_features = out_features
         self.condition = condition
         self.leakyrelu = nn.LeakyReLU(leak)
-        self.conditioner = conditioner
         
         t_type = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
 
@@ -48,7 +47,7 @@ class deepCAT(nn.Module):
                                                        gain=np.sqrt(2.0)),
                                 requires_grad=True)
         
-    def forward(self, input, adj):
+    def forward(self, input, adj, gamma, beta):
         # transform to new feature space
         h = torch.mm(input, self.big_W)
         # count
@@ -78,8 +77,6 @@ class deepCAT(nn.Module):
         
         # if this is a conditioning layer, do the conditioning
         if self.condition:
-            gamma,beta = conditioner(h)
-            gamma += torch.ones_like(gamma)
             h_prime = gamma * h_prime + beta
 
         return h_prime
