@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
-from mechanisms import ConditionalAttentionMech, SimplifiedGAT
+from mechanisms import ConditionalAttentionMech, SimplifiedGAT, deepCAT, unCAT
 
 class ConditionalAttentionLayer(nn.Module):
     def __init__(self, ins, outs, dropout, leak, N_mechs, conditioner, concat=True, activate=False, activation=F.elu):
