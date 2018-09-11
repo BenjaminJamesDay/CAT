@@ -95,7 +95,6 @@ class unCAT(nn.Module):
         self.dropout = dropout
         self.in_features = in_features
         self.out_features = out_features
-        self.condition = condition
         self.leakyrelu = nn.LeakyReLU(leak)
         
         t_type = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
