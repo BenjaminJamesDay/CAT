@@ -29,5 +29,7 @@ def coraConditioner(x):
     transform the features to the conditioning parameters for every node. Thus
     the network itself is 1433->..->16
     """
-    cond = torch.cat([coraConditionerModel(example) for example in x])
+    
+    model = coraConditionerModel
+    cond = torch.cat([model(example) for example in x])
     return cond.view(2708,2,8)
