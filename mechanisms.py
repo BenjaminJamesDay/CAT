@@ -85,6 +85,67 @@ class deepCAT(nn.Module):
     def __repr__(self):
         return self.__class__.__name__ + ' (' + str(self.in_features) + ' -> ' + str(self.out_features) + ')'
 
+class unCAT(nn.Module):
+    """
+    GAT-like mechanism (no conditioning)
+    """
+
+    def __init__(self, in_features, out_features, dropout, leak):
+        super(deepCAT, self).__init__()
+        self.dropout = dropout
+        self.in_features = in_features
+        self.out_features = out_features
+        self.condition = condition
+        self.leakyrelu = nn.LeakyReLU(leak)
+        
+        t_type = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
+
+        self.big_W = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(in_features, out_features).type(t_type), 
+                                                         gain=np.sqrt(2.0)), 
+                                  requires_grad=True)
+        
+        # split 'a' to better represent how it is used
+        self.a_i = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(out_features, 1).type(t_type),
+                                                       gain=np.sqrt(2.0)),
+                                requires_grad=True)
+        self.a_j = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(out_features, 1).type(t_type),
+                                                       gain=np.sqrt(2.0)),
+                                requires_grad=True)
+        
+    def forward(self, input, adj):
+        # transform to new feature space
+        h = torch.mm(input, self.big_W)
+        # count
+        N = h.size()[0]
+        
+        # repeat in order {1,1,...,1,2,2,...,2,3,...N}
+        a_i_input = h.repeat(1, N).view(N * N, -1)
+        # repeat in order {1,2...N,1,2...N,...,N}
+        a_j_input = h.repeat(N, 1)
+        
+        # sum the dot products
+        alpha = torch.matmul(a_i_input, self.a_i) + torch.matmul(a_j_input, self.a_j)
+        # activate and make square
+        e = self.leakyrelu(alpha).view(N,N)
+        
+        # this will zero out in a softmax
+        zero_vec = -9e15*torch.ones_like(e)
+        # mask using adjacency matrix
+        attention = torch.where(adj > 0, e, zero_vec)
+        # take softmax
+        attention = F.softmax(attention, dim=1)
+        # perform dropout (not sure why they do this here and not on the adj but w/e)
+        attention = F.dropout(attention, self.dropout, training=self.training)
+        
+        # give new features
+        h_prime = torch.matmul(attention, h)
+
+        return h_prime
+
+    def __repr__(self):
+        return self.__class__.__name__ + ' (' + str(self.in_features) + ' -> ' + str(self.out_features) + ')'
+    
+    
 class ConditionalAttentionMech(nn.Module):
     """
     Auto-conditional GAT-like mechanism:
