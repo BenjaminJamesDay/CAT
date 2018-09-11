@@ -49,7 +49,7 @@ if args.cuda:
 adj, features, labels, idx_train, idx_val, idx_test = load_data()
 
 # Model and optimizer
-model = CCModel(classes=int(labels.max()) + 1, ins=features.shape[1], coraConditioner)
+model = CCModel(classes=int(labels.max()) + 1, ins=features.shape[1], conditioner=coraConditioner)
 optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
 if args.cuda:
