@@ -25,14 +25,14 @@ parser.add_argument('--no_cuda', action='store_true', default=False, help='Disab
 parser.add_argument('--cuda_device', type=str, default='3', help='CUDA device to use.')
 parser.add_argument('--fastmode', action='store_true', default=False, help='Validate during training pass.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
-parser.add_argument('--epochs', type=int, default=1000, help='Number of epochs to train.')
+parser.add_argument('--epochs', type=int, default=2000, help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.001, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
 parser.add_argument('--hidden', type=int, default=8, help='Number of hidden units.')
 parser.add_argument('--nb_heads', type=int, default=8, help='Number of head attentions.')
 parser.add_argument('--dropout', type=float, default=0.6, help='Dropout rate (1 - keep probability).')
 parser.add_argument('--alpha', type=float, default=0.2, help='Alpha for the leaky_relu.')
-parser.add_argument('--patience', type=int, default=200, help='Patience')
+parser.add_argument('--patience', type=int, default=300, help='Patience')
 
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
@@ -114,7 +114,7 @@ for epoch in range(args.epochs):
     torch.save(model.state_dict(), '{}.pkl'.format(epoch))
     if valacc_values[-1] > best:
         best = valacc_values[-1]
-        best_epoch = epoch + 1
+        best_epoch = epoch
         bad_counter = 0
     else:
         bad_counter += 1
