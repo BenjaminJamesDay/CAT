@@ -41,7 +41,7 @@ class ConditionalAttentionLayer(nn.Module):
     
 class UnconditionalAttentionLayer(nn.Module):
     def __init__(self, ins, outs, dropout, leak, N_mechs, concat=True, activate=False, activation=F.elu):
-        super(ConditionalAttentionLayer, self).__init__()
+        super(UnconditionalAttentionLayer, self).__init__()
         
         self.dropout = dropout
         
