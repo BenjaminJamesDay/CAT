@@ -91,7 +91,7 @@ class unCAT(nn.Module):
     """
 
     def __init__(self, in_features, out_features, dropout, leak):
-        super(deepCAT, self).__init__()
+        super(unCAT, self).__init__()
         self.dropout = dropout
         self.in_features = in_features
         self.out_features = out_features
