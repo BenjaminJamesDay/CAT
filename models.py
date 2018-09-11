@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
-from layers import ConditionalAttentionLayer, SimplifiedGATLayer
+from layers import ConditionalAttentionLayer, UnconditionalAttentionLayer, SimplifiedGATLayer
 
 class CCModel(nn.Module):
     """
