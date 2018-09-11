@@ -30,6 +30,6 @@ def coraConditioner(x):
     the network itself is 1433->..->16
     """
     
-    model = coraConditionerModel
+    model = coraConditionerModel()
     cond = torch.cat([model(example) for example in x])
     return cond.view(2708,2,8)
