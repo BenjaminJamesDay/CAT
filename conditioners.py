@@ -31,5 +31,6 @@ def coraConditioner(x):
     """
     
     model = coraConditionerModel()
+    model.cuda()
     cond = torch.cat([model(example) for example in x])
     return cond.view(2708,2,8)
