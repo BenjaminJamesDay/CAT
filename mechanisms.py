@@ -78,7 +78,7 @@ class deepCAT(nn.Module):
         # if this is a conditioning layer, do the conditioning
         if self.condition:
             # this is super easy in PyTorch where multiplication and addition are elementwise
-            h_prime = gamma * h_prime + beta
+            h_prime = (1+gamma) * h_prime + beta
 
         return h_prime
 
