@@ -11,15 +11,15 @@ Included mechanisms:
 
 class deepCAT(nn.Module):
     """
-    Auto-conditional GAT-like mechanism:
+    Auto-conditional GAT-like mechanism with external conditioning:
+    
+    Take: h (N*F), Adj (N*N), gamma (N), beta (N)
     
     alpha_ij = a . concat(big_W . h_i, big_W . h_j) = (b . big_W . h_i) + (c . big_W . h_j)
     
     e_ij = softmax(LeakyReLU(alpha_ij))_j   -- j in neighbourhood of i
     
     GAT = sum { e_ij * big_W . h_j }
-    
-    conditioner(big_W . h_i) = (gamma,beta)
     
     h' = gamma * GAT + beta
     
@@ -77,6 +77,7 @@ class deepCAT(nn.Module):
         
         # if this is a conditioning layer, do the conditioning
         if self.condition:
+            # this is super easy in PyTorch where multiplication and addition are elementwise
             h_prime = gamma * h_prime + beta
 
         return h_prime

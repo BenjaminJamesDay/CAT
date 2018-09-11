@@ -17,14 +17,14 @@ class CCModel(nn.Module):
         - second has 1 mechanism (no conditioning) computing C features for classification with softmax
     - dropout = 0.6
     """
-    def __init__(self, ins, classes):
+    def __init__(self, ins, classes, conditioner):
         super(CCModel, self).__init__()
         
         # dropout is included in the layers so we don't need to add anything else
         # activate the first layer and use the automatic ELU
-        self.CAT1 = ConditionalAttentionLayer(N_mechs=8, dropout=0.6, ins=ins, leak=0., outs=8, activate=True)
+        self.CAT1 = ConditionalAttentionLayer(ins=ins, outs=8, dropout=0.6, leak=0., N_mechs=8, conditioner, activate=True)
         # do not activate the output
-        self.CAT2 = ConditionalAttentionLayer(N_mechs=1, dropout=0.6, ins=64, leak=0., outs=classes)
+        self.CAT2 = UnconditionalAttentionLayer(N_mechs=1, dropout=0.6, ins=64, leak=0., outs=classes)
         
     def forward(self, x, adj):
         # pass is v tidy, just first layer then second
