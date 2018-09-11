@@ -10,7 +10,7 @@ class ConditionalAttentionLayer(nn.Module):
         self.dropout = dropout
         
         # generate the N mechanisms
-        self.mechanisms = [ConditionalAttentionMech(ins,outs,dropout,leak) for _ in range(N_mechs)]
+        self.mechanisms = [deepCAT(ins,outs,dropout,leak) for _ in range(N_mechs)]
         # add to module
         for i, mechanism in enumerate(self.mechanisms):
             self.add_module('mechanism_{}'.format(i), mechanism)
@@ -46,7 +46,7 @@ class UnconditionalAttentionLayer(nn.Module):
         self.dropout = dropout
         
         # generate the N mechanisms
-        self.mechanisms = [ConditionalAttentionMech(ins,outs,dropout,leak) for _ in range(N_mechs)]
+        self.mechanisms = [unCAT(ins,outs,dropout,leak) for _ in range(N_mechs)]
         # add to module
         for i, mechanism in enumerate(self.mechanisms):
             self.add_module('mechanism_{}'.format(i), mechanism)
