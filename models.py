@@ -22,7 +22,8 @@ class CCModel(nn.Module):
         
         # dropout is included in the layers so we don't need to add anything else
         # activate the first layer and use the automatic ELU
-        self.CAT1 = ConditionalAttentionLayer(ins=ins, outs=8, dropout=0.6, leak=0., N_mechs=8, conditioner, activate=True)
+        self.CAT1 = ConditionalAttentionLayer(ins=ins, outs=8, dropout=0.6, leak=0., N_mechs=8,
+                                              conditioner=conditioner, activate=True)
         # do not activate the output
         self.CAT2 = UnconditionalAttentionLayer(N_mechs=1, dropout=0.6, ins=64, leak=0., outs=classes)
         
