@@ -33,4 +33,5 @@ def coraConditioner(x):
     model = coraConditionerModel()
     model.cuda()
     cond = torch.cat([model(example) for example in x])
-    return cond.view(2708,2,8)
+    #reshape the concatenated set (2N.N_mechs) to (N*2*N_mechs) then permute to (2*N_mechs*N)
+    return cond.view(2708,2,8).permute(1,2,0)
