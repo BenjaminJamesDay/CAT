@@ -89,7 +89,7 @@ def train(epoch):
           'acc_val: {:.4f}'.format(acc_val.data[0]),
           'time: {:.4f}s'.format(time.time() - t))
 
-    return loss_val.data[0]
+    return acc_val.data[0]
 
 
 def compute_test():
@@ -104,16 +104,16 @@ def compute_test():
 
 # Train model
 t_total = time.time()
-loss_values = []
+valacc_values = []
 bad_counter = 0
-best = args.epochs + 1
+best = 0
 best_epoch = 0
 for epoch in range(args.epochs):
-    loss_values.append(train(epoch))
+    valacc_values.append(train(epoch))
 
     torch.save(model.state_dict(), '{}.pkl'.format(epoch))
-    if loss_values[-1] < best:
-        best = loss_values[-1]
+    if valacc_values[-1] > best:
+        best = valacc_values[-1]
         best_epoch = epoch
         bad_counter = 0
     else:
