@@ -32,7 +32,7 @@ parser.add_argument('--hidden', type=int, default=8, help='Number of hidden unit
 parser.add_argument('--nb_heads', type=int, default=8, help='Number of head attentions.')
 parser.add_argument('--dropout', type=float, default=0.6, help='Dropout rate (1 - keep probability).')
 parser.add_argument('--alpha', type=float, default=0.2, help='Alpha for the leaky_relu.')
-parser.add_argument('--patience', type=int, default=100, help='Patience')
+parser.add_argument('--patience', type=int, default=200, help='Patience')
 
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
@@ -114,7 +114,7 @@ for epoch in range(args.epochs):
     torch.save(model.state_dict(), '{}.pkl'.format(epoch))
     if valacc_values[-1] > best:
         best = valacc_values[-1]
-        best_epoch = epoch
+        best_epoch = epoch + 1
         bad_counter = 0
     else:
         bad_counter += 1
