@@ -120,6 +120,7 @@ for epoch in range(args.epochs):
         bad_counter += 1
 
     if bad_counter == args.patience:
+        print(best)
         break
 
     files = glob.glob('*.pkl')
