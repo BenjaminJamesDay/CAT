@@ -113,7 +113,7 @@ for epoch in range(args.epochs):
 
     torch.save(model.state_dict(), '{}.pkl'.format(epoch))
     if loss_val_values[-1] > best:
-        best = loss_val_values[-1]
+        best = acc_val_values[-1]
         best_epoch = epoch
         bad_counter = 0
     else:
