@@ -41,9 +41,9 @@ def coraConditioner(x):
 class coraConditionerModel2(nn.Module):
     def __init__(self):
         super(coraConditionerModel2, self).__init__()
-        self.hidden1 = nn.Linear(1433,64)
-        self.hidden2 = nn.Linear(64,32)
-        self.hidden3 = nn.Linear(32,36)
+        self.hidden1 = nn.Linear(1433,32)
+        self.hidden2 = nn.Linear(32,16)
+        self.hidden3 = nn.Linear(16,36)
         
         nn.init.xavier_uniform_(self.hidden3.weight, 0.05)
 
