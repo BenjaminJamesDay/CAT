@@ -69,7 +69,7 @@ def coraConditioner2(x):
 
 class coraConditionerModel3(nn.Module):
     def __init__(self):
-        super(coraConditionerModel2, self).__init__()
+        super(coraConditionerModel3, self).__init__()
         self.hidden1 = nn.Linear(1433,64)
         self.hidden2 = nn.Linear(64,32)
         self.hidden3 = nn.Linear(32,40)
