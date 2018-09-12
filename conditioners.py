@@ -41,9 +41,9 @@ def coraConditioner(x):
 class coraConditionerModel2(nn.Module):
     def __init__(self):
         super(coraConditionerModel2, self).__init__()
-        self.hidden1 = nn.Linear(1433,32)
-        self.hidden2 = nn.Linear(32,16)
-        self.hidden3 = nn.Linear(16,36)
+        self.hidden1 = nn.Linear(1433,64)
+        self.hidden2 = nn.Linear(64,32)
+        self.hidden3 = nn.Linear(32,32)
         
         nn.init.xavier_uniform_(self.hidden3.weight, 0.05)
 
@@ -65,4 +65,4 @@ def coraConditioner2(x):
     model.cuda()
     cond = torch.cat([model(example) for example in x])
     #reshape the concatenated set (2N.N_mechs) to (N*2*N_mechs) then permute to (2*N_mechs*N)
-    return cond.view(2708,2,18).permute(1,2,0)
+    return cond.view(2708,2,16).permute(1,2,0)
