@@ -17,7 +17,7 @@ from torch.autograd import Variable
 
 from utils import load_data, accuracy
 from models import CCModel, CCModel2, CCModel3, CCModel4
-from conditioners import coraConditioner, coraConditioner2, coraConditioner3
+from conditioners import coraConditioner, coraConditioner2, coraConditioner3, coraConditioner4
 
 # Training settings
 parser = argparse.ArgumentParser()
