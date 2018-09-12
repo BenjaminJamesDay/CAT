@@ -106,7 +106,7 @@ def compute_test():
 t_total = time.time()
 loss_val_values = []
 bad_counter = 0
-best = 0
+best = float("inf")
 best_epoch = 0
 for epoch in range(args.epochs):
     loss_val_values.append(train(epoch))
