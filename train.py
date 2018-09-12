@@ -27,12 +27,12 @@ parser.add_argument('--fastmode', action='store_true', default=False, help='Vali
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
 parser.add_argument('--epochs', type=int, default=2000, help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.001, help='Initial learning rate.')
-parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
+parser.add_argument('--weight_decay', type=float, default=1e-4, help='Weight decay (L2 loss on parameters).')
 parser.add_argument('--hidden', type=int, default=8, help='Number of hidden units.')
 parser.add_argument('--nb_heads', type=int, default=8, help='Number of head attentions.')
 parser.add_argument('--dropout', type=float, default=0.6, help='Dropout rate (1 - keep probability).')
 parser.add_argument('--alpha', type=float, default=0.2, help='Alpha for the leaky_relu.')
-parser.add_argument('--patience', type=int, default=300, help='Patience')
+parser.add_argument('--patience', type=int, default=200, help='Patience')
 
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
@@ -89,7 +89,7 @@ def train(epoch):
           'acc_val: {:.4f}'.format(acc_val.data[0]),
           'time: {:.4f}s'.format(time.time() - t))
 
-    return loss_val.data[0]
+    return acc_val.data[0]
 
 
 def compute_test():
@@ -104,15 +104,15 @@ def compute_test():
 
 # Train model
 t_total = time.time()
-loss_val_values = []
+acc_val_values = []
 bad_counter = 0
-best = float("inf")
+best = 0
 best_epoch = 0
 for epoch in range(args.epochs):
-    loss_val_values.append(train(epoch))
+    acc_val_values.append(train(epoch))
 
     torch.save(model.state_dict(), '{}.pkl'.format(epoch))
-    if loss_val_values[-1] < best:
+    if loss_val_values[-1] > best:
         best = loss_val_values[-1]
         best_epoch = epoch
         bad_counter = 0
