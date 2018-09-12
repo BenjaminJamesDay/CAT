@@ -51,3 +51,33 @@ class SimpleGAT(nn.Module):
         # pass is v tidy, just first layer then second
         x = self.SGAT2((self.SGAT1(x,adj)),adj)
         return F.log_softmax(x, dim=1)
+
+    
+class CCModel2(nn.Module):
+    """
+    Model matching the form used for the CORA and Citeseer tasks in the GAT paper.
+    GAT formulation:
+    - 2 GAT layers
+        - first has 8 heads computing 8 features each, concatenated to 64, with ELU activation
+        - second has 1 head computing C features for classification with softmax
+    - dropout = 0.6
+    CAT modification:
+    - 2 CAT layers
+        - first has 8 mechanisms computing 8 features, concatenated, ELU
+        - second has 1 mechanism (no conditioning) computing C features for classification with softmax
+    - dropout = 0.6
+    """
+    def __init__(self, ins, classes, conditioner):
+        super(CCModel, self).__init__()
+        
+        # dropout is included in the layers so we don't need to add anything else
+        # activate the first layer and use the automatic ELU
+        self.CAT1 = ConditionalAttentionLayer(ins=ins, outs=12, dropout=0.2, leak=0.1, N_mechs=12,
+                                              conditioner=conditioner, activate=True)
+        # do not activate the output
+        self.CAT2 = UnconditionalAttentionLayer(N_mechs=2, dropout=0.4, ins=144, leak=0.1, outs=classes, concat=False)
+        
+    def forward(self, x, adj):
+        # pass is v tidy, just first layer then second
+        x = self.CAT2((self.CAT1(x,adj)),adj)
+        return F.log_softmax(x, dim=1)
