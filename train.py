@@ -16,7 +16,7 @@ import glob
 from torch.autograd import Variable
 
 from utils import load_data, accuracy
-from models import CCModel, CCModel2
+from models import CCModel, CCModel2, CCModel3
 from conditioners import coraConditioner, coraConditioner2, coraConditioner3
 
 # Training settings
