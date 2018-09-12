@@ -32,7 +32,7 @@ parser.add_argument('--hidden', type=int, default=8, help='Number of hidden unit
 parser.add_argument('--nb_heads', type=int, default=8, help='Number of head attentions.')
 parser.add_argument('--dropout', type=float, default=0.6, help='Dropout rate (1 - keep probability).')
 parser.add_argument('--alpha', type=float, default=0.2, help='Alpha for the leaky_relu.')
-parser.add_argument('--patience', type=int, default=200, help='Patience')
+parser.add_argument('--patience', type=int, default=100, help='Patience')
 
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
@@ -89,7 +89,7 @@ def train(epoch):
           'acc_val: {:.4f}'.format(acc_val.data[0]),
           'time: {:.4f}s'.format(time.time() - t))
 
-    return acc_val.data[0]
+    return loss_val.data[0]
 
 
 def compute_test():
@@ -104,17 +104,17 @@ def compute_test():
 
 # Train model
 t_total = time.time()
-acc_val_values = []
+loss_values = []
 bad_counter = 0
-best = 0
+best = args.epochs + 1
 best_epoch = 0
 for epoch in range(args.epochs):
-    acc_val_values.append(train(epoch))
+    loss_values.append(train(epoch))
 
     torch.save(model.state_dict(), '{}.pkl'.format(epoch))
-    if acc_val_values[-1] >= best:
-        best = acc_val_values[-1]
-        best_epoch = epoch+1
+    if loss_values[-1] < best:
+        best = loss_values[-1]
+        best_epoch = epoch
         bad_counter = 0
     else:
         bad_counter += 1
