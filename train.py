@@ -16,7 +16,7 @@ import glob
 from torch.autograd import Variable
 
 from utils import load_data, accuracy
-from models import CCModel, CCModel2, CCModel3
+from models import CCModel, CCModel2, CCModel3, CCModel4
 from conditioners import coraConditioner, coraConditioner2, coraConditioner3
 
 # Training settings
@@ -49,7 +49,7 @@ if args.cuda:
 adj, features, labels, idx_train, idx_val, idx_test = load_data()
 
 # Model and optimizer
-model = CCModel3(classes=int(labels.max()) + 1, ins=features.shape[1], conditioner=coraConditioner3)
+model = CCModel4(classes=int(labels.max()) + 1, ins=features.shape[1], conditioner=coraConditioner4)
 optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
 if args.cuda:
