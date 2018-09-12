@@ -112,7 +112,7 @@ for epoch in range(args.epochs):
     acc_val_values.append(train(epoch))
 
     torch.save(model.state_dict(), '{}.pkl'.format(epoch))
-    if loss_val_values[-1] > best:
+    if acc_val_values[-1] > best:
         best = acc_val_values[-1]
         best_epoch = epoch
         bad_counter = 0
