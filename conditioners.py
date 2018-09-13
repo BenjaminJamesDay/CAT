@@ -16,6 +16,8 @@ class coraConditionerModel(nn.Module):
         self.hidden2 = nn.Linear(64,32)
         self.hidden3 = nn.Linear(32,36)
         
+        nn.init.xavier_uniform_(self.hidden1.weight, 0.05)
+        nn.init.xavier_uniform_(self.hidden2.weight, 0.05)
         nn.init.xavier_uniform_(self.hidden3.weight, 0.05)
 
     def forward(self, x):
@@ -23,7 +25,7 @@ class coraConditionerModel(nn.Module):
         x = F.relu(self.hidden2(x))
         return (self.hidden3(x))
 
-def coraConditioner(x):
+def coraConditioner(x, conditioner):
     """
     Input is the Cora dataset 2708*1433
     For each node (2708) the features (1433) are used to generate conditioning
@@ -32,8 +34,6 @@ def coraConditioner(x):
     the network itself is 1433->..->16
     """
     
-    model = coraConditionerModel()
-    model.cuda()
-    cond = torch.cat([model(example) for example in x])
+    cond = torch.cat([conditioner(example) for example in x])
     #reshape the concatenated set (2N.N_mechs) to (N*2*N_mechs) then permute to (2*N_mechs*N)
     return cond.view(2708,2,18).permute(1,2,0)
