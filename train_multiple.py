@@ -1,7 +1,7 @@
 from __future__ import division
 
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '3'
 
 import time
 import argparse
@@ -16,7 +16,7 @@ from torch.autograd import Variable
 from utils import load_data, accuracy
 from models import CCModel
 
-runs = 5
+runs = 50
 
 # Training settings
 parser = argparse.ArgumentParser()
@@ -24,7 +24,7 @@ parser.add_argument('--no_cuda', action='store_true', default=False, help='Disab
 parser.add_argument('--cuda_device', type=str, default='3', help='CUDA device to use.')
 parser.add_argument('--fastmode', action='store_true', default=False, help='Validate during training pass.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
-parser.add_argument('--epochs', type=int, default=2, help='Number of epochs to train.')
+parser.add_argument('--epochs', type=int, default=2000, help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.001, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=1e-4, help='Weight decay (L2 loss on parameters).')
 parser.add_argument('--hidden', type=int, default=8, help='Number of hidden units.')
@@ -100,6 +100,7 @@ for run in range(runs):
     best = float("inf")
     best_epoch = 0
     
+    saved_model = 'best_model' + t + '.pkl'
     # Train the model
     for epoch in range(args.epochs):
         loss_values.append(train(epoch))
@@ -107,7 +108,7 @@ for run in range(runs):
         if loss_values[-1] < best:
             best = loss_values[-1]
             best_epoch = epoch + 1
-            torch.save(model.state_dict(), 'best_model.pkl')
+            torch.save(model.state_dict(), saved_model)
             bad_counter = 0
         else:
             bad_counter += 1
@@ -116,11 +117,11 @@ for run in range(runs):
             break
 
     # Restore the best from this set of models model
-    model.load_state_dict(torch.load('best_model.pkl'))
+    model.load_state_dict(torch.load(saved_model))
 
     # Test the model & log result
     result = compute_test()
 
     f = open("results" + t + ".txt", "a+")
     f.write(result + "\n")
-    f.close() 
+    f.close()
