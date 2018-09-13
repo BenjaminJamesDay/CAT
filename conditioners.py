@@ -26,3 +26,17 @@ class coraConditioner(nn.Module):
         x = F.elu(self.hidden2(x))
         x = F.dropout(x, 0.7, training=self.training)
         return (self.hidden3(x))
+    
+class coraConditioner2(nn.Module):
+    def __init__(self, out_params):
+        super(coraConditioner2, self).__init__()
+        self.hidden1 = nn.Linear(1433,32)
+        self.hidden2 = nn.Linear(32, out_params)
+        
+        nn.init.xavier_uniform_(self.hidden1.weight, 1)
+        nn.init.xavier_uniform_(self.hidden2.weight, 1)
+
+    def forward(self, x):
+        x = F.elu(self.hidden1(x))
+        x = F.dropout(x, 0.7, training=self.training)
+        return (self.hidden2(x))

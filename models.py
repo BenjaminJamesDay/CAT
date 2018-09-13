@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch
 import torch.nn.functional as F
 from layers import ConditionalAttentionLayer, UnconditionalAttentionLayer, SimplifiedGATLayer
-from conditioners import coraConditioner
+from conditioners import coraConditioner, coraConditioner2
 
 class CCModel(nn.Module):
     """
@@ -24,7 +24,7 @@ class CCModel(nn.Module):
         # dropout is included in the layers so we don't need to add anything else
         # activate the first layer and use the automatic ELU
         self.CAT1 = ConditionalAttentionLayer(ins=ins, outs=5, dropout=0.4, leak=0.2, N_mechs=20,
-                                              conditioner=coraConditioner, activate=True)
+                                              conditioner=coraConditioner2, activate=True)
         # do not activate the output
         self.CAT2 = UnconditionalAttentionLayer(N_mechs=1, dropout=0.5, ins=100, leak=0.2, outs=classes)
         
