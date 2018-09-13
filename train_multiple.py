@@ -16,6 +16,8 @@ from torch.autograd import Variable
 from utils import load_data, accuracy
 from models import CCModel
 
+runs = 100
+
 # Training settings
 parser = argparse.ArgumentParser()
 parser.add_argument('--no_cuda', action='store_true', default=False, help='Disables CUDA training.')
@@ -79,7 +81,7 @@ def train(epoch):
 
     loss_val = F.nll_loss(output[idx_val], labels[idx_val])
     acc_val = accuracy(output[idx_val], labels[idx_val])
-    return loss_val.data[0]
+    return loss_val.item()
 
 
 def compute_test():
@@ -88,8 +90,6 @@ def compute_test():
     loss_test = F.nll_loss(output[idx_test], labels[idx_test])
     acc_test = accuracy(output[idx_test], labels[idx_test])
     return str(acc_test.item())
-
-runs = 2
 
 for run in range(runs):
     # Train model
