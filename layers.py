@@ -23,7 +23,7 @@ class ConditionalAttentionLayer(nn.Module):
         #     (N*F) = features (F) for each node (N)
         # and return something of shape
         #     (2*N_mechs*N) = gamma,beta (2) for each node (N) for each mechanism (N_mechs)
-        self.conditioner = conditioner(out_params = 2*N_mechs)
+        self.conditioner = conditioner(out_params = 2*N_mechs).cuda()
         
     def forward(self, x, adj):
         # dropout first
