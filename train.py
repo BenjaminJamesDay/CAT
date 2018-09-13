@@ -111,6 +111,7 @@ for epoch in range(args.epochs):
     acc_values.append(train(epoch))
 
     if acc_values[-1] >= best:
+        print('New best model')
         best = acc_values[-1]
         best_epoch = epoch + 1
         torch.save(model.state_dict(), 'best_model.pkl')
