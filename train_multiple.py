@@ -16,7 +16,7 @@ from torch.autograd import Variable
 from utils import load_data, accuracy
 from models import CCModel
 
-runs = 100
+runs = 50
 
 # Training settings
 parser = argparse.ArgumentParser()
@@ -47,10 +47,6 @@ if args.cuda:
 # Load data
 adj, features, labels, idx_train, idx_val, idx_test = load_data()
 
-# Model and optimizer
-model = CCModel(classes=int(labels.max()) + 1, ins=features.shape[1])
-optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-
 if args.cuda:
     model.cuda()
     features = features.cuda()
@@ -64,7 +60,6 @@ features, adj, labels = Variable(features), Variable(adj), Variable(labels)
 
 
 def train(epoch):
-    t = time.time()
     model.train()
     optimizer.zero_grad()
     output = model(features, adj)
@@ -91,13 +86,21 @@ def compute_test():
     acc_test = accuracy(output[idx_test], labels[idx_test])
     return str(acc_test.item())
 
+
+t = time.time()
+
 for run in range(runs):
-    # Train model
-    t_total = time.time()
+    # Create new model and optimizer
+    model = CCModel(classes=int(labels.max()) + 1, ins=features.shape[1])
+    optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    
+    # Reset all model counters / monitors
     loss_values = []
     bad_counter = 0
     best = float("inf")
     best_epoch = 0
+    
+    # Train the model
     for epoch in range(args.epochs):
         loss_values.append(train(epoch))
 
@@ -112,12 +115,12 @@ for run in range(runs):
         if bad_counter == args.patience:
             break
 
-    # Restore best model
+    # Restore the best from this set of models model
     model.load_state_dict(torch.load('best_model.pkl'))
 
-    # Testing & log result
+    # Test the model & log result
     result = compute_test()
 
-    f = open("results.txt", "a+")
+    f = open("results" + str(t) + ".txt", "a+")
     f.write(result + "\n")
     f.close() 
