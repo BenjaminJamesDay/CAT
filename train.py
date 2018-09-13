@@ -105,15 +105,15 @@ def compute_test():
 t_total = time.time()
 acc_values = []
 bad_counter = 0
-best = 0
+best = 0.
 best_epoch = 0
 for epoch in range(args.epochs):
     acc_values.append(train(epoch))
 
-    torch.save(model.state_dict(), '{}.pkl'.format(epoch))
     if acc_values[-1] >= best:
         best = acc_values[-1]
         best_epoch = epoch
+        torch.save(model.state_dict(), '{}.pkl'.format(epoch))
         bad_counter = 0
     else:
         bad_counter += 1
@@ -138,7 +138,7 @@ print("Optimization Finished!")
 print("Total time elapsed: {:.4f}s".format(time.time() - t_total))
 
 # Restore best model
-print('Loading {}th epoch'.format(best_epoch+1))
+print('Loading {}th epoch'.format(best_epoch))
 model.load_state_dict(torch.load('{}.pkl'.format(best_epoch)))
 
 # Testing
