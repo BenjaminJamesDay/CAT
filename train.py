@@ -88,7 +88,7 @@ def train(epoch):
           'acc_val: {:.4f}'.format(acc_val.data[0]),
           'time: {:.4f}s'.format(time.time() - t))
 
-    return acc_val.data[0]
+    return loss_val.data[0]
 
 
 def compute_test():
@@ -103,16 +103,15 @@ def compute_test():
 
 # Train model
 t_total = time.time()
-acc_values = []
+loss_values = []
 bad_counter = 0
-best = 0.
+best = float("inf")
 best_epoch = 0
 for epoch in range(args.epochs):
-    acc_values.append(train(epoch))
+    loss_values.append(train(epoch))
 
-    if acc_values[-1] >= best:
-        print('New best model')
-        best = acc_values[-1]
+    if loss_values[-1] < best:
+        best = loss_values[-1]
         best_epoch = epoch + 1
         torch.save(model.state_dict(), 'best_model.pkl')
         bad_counter = 0
