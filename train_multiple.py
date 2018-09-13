@@ -87,7 +87,7 @@ def compute_test():
     output = model(features, adj)
     loss_test = F.nll_loss(output[idx_test], labels[idx_test])
     acc_test = accuracy(output[idx_test], labels[idx_test])
-    return str(acc_test.data[0])
+    return str(acc_test.item())
 
 runs = 2
 
@@ -116,7 +116,7 @@ for run in range(runs):
     model.load_state_dict(torch.load('best_model.pkl'))
 
     # Testing & log result
-    result = compute_test().item()
+    result = compute_test()
 
     f = open("results.txt", "a+")
     f.write(result + "\n")
