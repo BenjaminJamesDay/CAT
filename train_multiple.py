@@ -89,32 +89,35 @@ def compute_test():
     acc_test = accuracy(output[idx_test], labels[idx_test])
     return str(acc_test.data[0])
 
-# Train model
-t_total = time.time()
-loss_values = []
-bad_counter = 0
-best = float("inf")
-best_epoch = 0
-for epoch in range(args.epochs):
-    loss_values.append(train(epoch))
+runs = 2
 
-    if loss_values[-1] < best:
-        best = loss_values[-1]
-        best_epoch = epoch + 1
-        torch.save(model.state_dict(), 'best_model.pkl')
-        bad_counter = 0
-    else:
-        bad_counter += 1
+for run in range(runs):
+    # Train model
+    t_total = time.time()
+    loss_values = []
+    bad_counter = 0
+    best = float("inf")
+    best_epoch = 0
+    for epoch in range(args.epochs):
+        loss_values.append(train(epoch))
 
-    if bad_counter == args.patience:
-        break
+        if loss_values[-1] < best:
+            best = loss_values[-1]
+            best_epoch = epoch + 1
+            torch.save(model.state_dict(), 'best_model.pkl')
+            bad_counter = 0
+        else:
+            bad_counter += 1
 
-# Restore best model
-model.load_state_dict(torch.load('best_model.pkl'))
+        if bad_counter == args.patience:
+            break
 
-# Testing & log result
-result = compute_test()
+    # Restore best model
+    model.load_state_dict(torch.load('best_model.pkl'))
 
-f = open("results.txt", "a+")
-f.write(result + "\n")
-f.close() 
+    # Testing & log result
+    result = compute_test()
+
+    f = open("results.txt", "a+")
+    f.write(result + "\n")
+    f.close() 
