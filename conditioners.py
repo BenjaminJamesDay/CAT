@@ -16,9 +16,9 @@ class coraConditioner(nn.Module):
         self.hidden2 = nn.Linear(64,32)
         self.hidden3 = nn.Linear(32, out_params)
         
-        nn.init.xavier_uniform_(self.hidden1.weight, 0.05)
-        nn.init.xavier_uniform_(self.hidden2.weight, 0.05)
-        nn.init.xavier_uniform_(self.hidden3.weight, 0.05)
+        nn.init.xavier_uniform_(self.hidden1.weight, 1)
+        nn.init.xavier_uniform_(self.hidden2.weight, 1)
+        nn.init.xavier_uniform_(self.hidden3.weight, 1)
 
     def forward(self, x):
         x = F.relu(self.hidden1(x))
