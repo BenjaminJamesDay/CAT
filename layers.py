@@ -41,6 +41,8 @@ class ConditionalAttentionLayer(nn.Module):
         else:
             x = torch.sum([mech(x, adj, gamma[i], beta[i]) for i,mech in self.mechanisms], dim=1)
         
+        x = F.dropout(x, self.dropout, training=self.training)
+        
         if self.activate:
             x = self.activation(x)
         return x
@@ -69,6 +71,8 @@ class UnconditionalAttentionLayer(nn.Module):
         # or sum (final layer)
         else:
             x = sum([mech(x, adj) for mech in self.mechanisms])
+        
+        x = F.dropout(x, self.dropout, training=self.training)
         
         if self.activate:
             x = self.activation(x)

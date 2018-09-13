@@ -22,5 +22,7 @@ class coraConditioner(nn.Module):
 
     def forward(self, x):
         x = F.relu(self.hidden1(x))
+        x = F.dropout(x, 0.5, training=self.training)
         x = F.relu(self.hidden2(x))
+        x = F.dropout(x, 0.5, training=self.training)
         return (self.hidden3(x))
