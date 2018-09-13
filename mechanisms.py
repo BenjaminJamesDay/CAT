@@ -35,17 +35,16 @@ class deepCAT(nn.Module):
         
         t_type = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
 
-        self.big_W = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(in_features, out_features).type(t_type), 
-                                                         gain=np.sqrt(2.0)), 
-                                  requires_grad=True)
+        self.big_W = nn.Parameter(torch.Tensor(in_features, out_features).type(t_type), requires_grad=True)
         
         # split 'a' to better represent how it is used
-        self.a_i = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(out_features, 1).type(t_type),
-                                                       gain=np.sqrt(2.0)),
-                                requires_grad=True)
-        self.a_j = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(out_features, 1).type(t_type),
-                                                       gain=np.sqrt(2.0)),
-                                requires_grad=True)
+        self.a_i = nn.Parameter(torch.Tensor(out_features, 1).type(t_type), requires_grad=True)
+        self.a_j = nn.Parameter(torch.Tensor(out_features, 1).type(t_type), requires_grad=True)
+        
+        #initialize all with Xavier (Glorot Uniform)
+        nn.init.xavier_uniform_(self.big_W, np.sqrt(2.0))
+        nn.init.xavier_uniform_(self.a_i, np.sqrt(2.0))
+        nn.init.xavier_uniform_(self.a_j, np.sqrt(2.0))
         
     def forward(self, input, adj, gamma, beta):
         # transform to new feature space
@@ -101,17 +100,16 @@ class unCAT(nn.Module):
         
         t_type = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
 
-        self.big_W = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(in_features, out_features).type(t_type), 
-                                                         gain=np.sqrt(2.0)), 
-                                  requires_grad=True)
+        self.big_W = nn.Parameter(torch.Tensor(in_features, out_features).type(t_type), requires_grad=True)
         
         # split 'a' to better represent how it is used
-        self.a_i = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(out_features, 1).type(t_type),
-                                                       gain=np.sqrt(2.0)),
-                                requires_grad=True)
-        self.a_j = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(out_features, 1).type(t_type),
-                                                       gain=np.sqrt(2.0)),
-                                requires_grad=True)
+        self.a_i = nn.Parameter(torch.Tensor(out_features, 1).type(t_type), requires_grad=True)
+        self.a_j = nn.Parameter(torch.Tensor(out_features, 1).type(t_type), requires_grad=True)
+        
+        #initialize all with Xavier (Glorot Uniform)
+        nn.init.xavier_uniform_(self.big_W, np.sqrt(2.0))
+        nn.init.xavier_uniform_(self.a_i, np.sqrt(2.0))
+        nn.init.xavier_uniform_(self.a_j, np.sqrt(2.0))
         
     def forward(self, input, adj):
         # transform to new feature space
@@ -174,26 +172,25 @@ class ConditionalAttentionMech(nn.Module):
         
         t_type = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
 
-        self.big_W = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(in_features, out_features).type(t_type), 
-                                                         gain=np.sqrt(2.0)), 
-                                  requires_grad=True)
+        self.big_W = nn.Parameter(torch.Tensor(in_features, out_features).type(t_type), requires_grad=True)
         
         # split 'a' to better represent how it is used
-        self.a_i = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(out_features, 1).type(t_type),
-                                                       gain=np.sqrt(2.0)),
-                                requires_grad=True)
-        self.a_j = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(out_features, 1).type(t_type),
-                                                       gain=np.sqrt(2.0)),
-                                requires_grad=True)
+        self.a_i = nn.Parameter(torch.Tensor(out_features, 1).type(t_type), requires_grad=True)
+        self.a_j = nn.Parameter(torch.Tensor(out_features, 1).type(t_type), requires_grad=True)
         
-        # conditioning parameter vectors
-        self.w_gamma = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(out_features, 1).type(t_type),
-                                                           gain=np.sqrt(0.005)),
-                                    requires_grad=True)
+        # conditioing parameter vectors
+        self.w_gamma = nn.Parameter(torch.Tensor(out_features, 1).type(t_type), requires_grad=True)
+        self.w_beta = nn.Parameter(torch.Tensor(out_features, 1).type(t_type), requires_grad=True)
         
-        self.w_beta = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(out_features, 1).type(t_type),
-                                                          gain=np.sqrt(0.005)),
-                                   requires_grad=True)
+        
+        #initialize all with Xavier (Glorot Uniform)
+        nn.init.xavier_uniform_(self.big_W, np.sqrt(2.0))
+        nn.init.xavier_uniform_(self.a_i, np.sqrt(2.0))
+        nn.init.xavier_uniform_(self.a_j, np.sqrt(2.0))
+        
+        # lowered gain for the conditioners as we don't want them to dominate early on
+        nn.init.xavier_uniform_(self.w_gamma, np.sqrt(0.005))
+        nn.init.xavier_uniform_(self.w_beta, np.sqrt(0.005))
 
 
     def forward(self, input, adj):
@@ -260,15 +257,14 @@ class SimplifiedGAT(nn.Module):
         
         t_type = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
 
-        self.big_W = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(in_features, out_features).type(t_type), 
-                                                         gain=np.sqrt(2.0)), 
-                                  requires_grad=True)
+        self.big_W = nn.Parameter(torch.Tensor(in_features, out_features).type(t_type), requires_grad=True)
         
-        # split 'a' to better represent how it is used
-        self.a = nn.Parameter(nn.init.xavier_uniform(torch.Tensor(out_features, 1).type(t_type),
-                                                       gain=np.sqrt(2.0)),
-                                requires_grad=True)
-
+        # this a is only used for neighbours (hence only out_features*1)
+        self.a = nn.Parameter(torch.Tensor(out_features, 1).type(t_type), requires_grad=True)
+        
+        #initialize all with Xavier (Glorot Uniform)
+        nn.init.xavier_uniform_(self.big_W, np.sqrt(2.0))
+        nn.init.xavier_uniform_(self.a, np.sqrt(2.0))
 
 
     def forward(self, input, adj):
