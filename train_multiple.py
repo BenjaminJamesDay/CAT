@@ -116,7 +116,7 @@ for run in range(runs):
     model.load_state_dict(torch.load('best_model.pkl'))
 
     # Testing & log result
-    result = compute_test()
+    result = compute_test().item()
 
     f = open("results.txt", "a+")
     f.write(result + "\n")
