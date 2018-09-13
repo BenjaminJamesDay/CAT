@@ -111,7 +111,7 @@ for epoch in range(args.epochs):
     acc_values.append(train(epoch))
 
     torch.save(model.state_dict(), '{}.pkl'.format(epoch))
-    if acc_values[-1] > best:
+    if acc_values[-1] >= best:
         best = acc_values[-1]
         best_epoch = epoch
         bad_counter = 0
@@ -138,7 +138,7 @@ print("Optimization Finished!")
 print("Total time elapsed: {:.4f}s".format(time.time() - t_total))
 
 # Restore best model
-print('Loading {}th epoch'.format(best_epoch))
+print('Loading {}th epoch'.format(best_epoch+1))
 model.load_state_dict(torch.load('{}.pkl'.format(best_epoch)))
 
 # Testing
