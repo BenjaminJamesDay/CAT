@@ -87,7 +87,7 @@ def compute_test():
     return str(acc_test.item())
 
 
-t = time.time()
+t = time.strftime("%Y-%m-%d-%H-%M")
 
 for run in range(runs):
     # Create new model and optimizer
@@ -121,6 +121,6 @@ for run in range(runs):
     # Test the model & log result
     result = compute_test()
 
-    f = open("results" + str(t) + ".txt", "a+")
+    f = open("results" + t + ".txt", "a+")
     f.write(result + "\n")
     f.close() 
